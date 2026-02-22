@@ -10,7 +10,7 @@ Problems are grouped by the section they appear in during the course.
 namasteDSA/
 └── warmUp/
     ├── countDigits.js
-    ├── palindrom.js
+    ├── palindrome.js
     └── reverse.js
 ```
 
@@ -21,7 +21,7 @@ namasteDSA/
 | Problem | File |
 |---------|------|
 | Count Digits | `warmUp/countDigits.js` |
-| Palindrome Number | `warmUp/palindrom.js` |
+| Palindrome Number | `warmUp/palindrome.js` |
 | Reverse Integer | `warmUp/reverse.js` |
 
 ## Language
