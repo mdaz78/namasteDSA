@@ -8,10 +8,16 @@ Problems are grouped by the section they appear in during the course.
 
 ```
 namasteDSA/
+├── arrays/
+│   └── removeDuplicates.js
 └── warmUp/
     ├── countDigits.js
+    ├── countNegatives.js
+    ├── findLargest.js
     ├── palindrome.js
-    └── reverse.js
+    ├── reverse.js
+    ├── searchElement.js
+    └── secondLargest.js
 ```
 
 ## Problems
@@ -21,8 +27,18 @@ namasteDSA/
 | Problem | File |
 |---------|------|
 | Count Digits | `warmUp/countDigits.js` |
-| Palindrome Number | `warmUp/palindrome.js` |
-| Reverse Integer | `warmUp/reverse.js` |
+| Count Negatives | `warmUp/countNegatives.js` |
+| Find Largest | `warmUp/findLargest.js` |
+| [Palindrome Number](https://leetcode.com/problems/palindrome-number/) | `warmUp/palindrome.js` |
+| [Reverse Integer](https://leetcode.com/problems/reverse-integer/) | `warmUp/reverse.js` |
+| Search Element | `warmUp/searchElement.js` |
+| Second Largest | `warmUp/secondLargest.js` |
+
+### Arrays
+
+| Problem | File |
+|---------|------|
+| [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | `arrays/removeDuplicates.js` |
 
 ## Language
 
