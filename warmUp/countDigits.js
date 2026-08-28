@@ -1,5 +1,7 @@
 // Write a function that returns the count of digits in a number
 function countDigits(n) {
+  if (n === 0) return 1;
+
   let digits = 0;
 
   n = Math.abs(n);
@@ -13,7 +15,7 @@ function countDigits(n) {
 }
 
 // More test cases
-console.log(countDigits(0)); // Expected: 0 (edge case: zero has no digits in this logic)
+console.log(countDigits(0)); // Expected: 1 (edge case: zero has one digit)
 console.log(countDigits(5)); // Expected: 1 (single digit)
 console.log(countDigits(10)); // Expected: 2
 console.log(countDigits(999)); // Expected: 3
