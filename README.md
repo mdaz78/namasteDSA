@@ -17,8 +17,8 @@ namasteDSA/
     ├── palindrome.js
     ├── reverse.js
     ├── searchElement.js
-    └── secondLargest.js
-    └── starPattern.js
+    ├── secondLargest.js
+    └── starPatterns.js
 ```
 
 ## Problems
@@ -34,7 +34,7 @@ namasteDSA/
 | [Reverse Integer](https://leetcode.com/problems/reverse-integer/)     | `warmUp/reverse.js`        |
 | Search Element                                                        | `warmUp/searchElement.js`  |
 | Second Largest                                                        | `warmUp/secondLargest.js`  |
-| Star Patterns                                                         | `warmUp/starPattern.js`    |
+| Star Patterns                                                         | `warmUp/starPatterns.js`   |
 
 ### Arrays
 
