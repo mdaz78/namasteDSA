@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference · Glossary</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<style>
+  dl.terms { margin: 1.5rem 0; }
+  dl.terms dt { font-weight: 600; font-size: 1.05rem; margin-top: 1.6rem; }
+  dl.terms dd { margin: 0.3rem 0 0; }
+  dl.terms .avoid { display: block; font-size: 0.85rem; color: var(--ink-soft); font-style: italic; margin-top: 0.3rem; }
+</style>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Reference</p>
+<h1>Glossary</h1>
+<p class="subtitle">The canonical vocabulary for this course. Every lesson and exercise uses these terms — and only these.</p>
+
+<hr>
+
+<dl class="terms">
+
+  <dt>Big-O</dt>
+  <dd>
+    An upper bound on how an algorithm's running time or memory grows as the input size
+    grows, ignoring constant factors and lower-order terms.
+    <span class="avoid">Avoid: "the speed", "how fast it runs"</span>
+  </dd>
+
+  <dt>Input size (n)</dt>
+  <dd>
+    The measure of how much data the algorithm is given — usually the number of elements,
+    sometimes the magnitude of a number or the length of a string.
+    <span class="avoid">Avoid: "the input", "the data"</span>
+  </dd>
+
+  <dt>Growth rate</dt>
+  <dd>
+    How the operation count changes in <em>shape</em> as n increases (flat, straight line,
+    curve, explosion), independent of how many actual operations run for a given n.
+    <span class="avoid">Avoid: "how big it gets"</span>
+  </dd>
+
+  <dt>Drop constants</dt>
+  <dd>
+    The rule that <code>O(2n)</code>, <code>O(500n)</code>, and <code>O(n/2)</code> are all
+    written <code>O(n)</code>, because constant multipliers don't change the growth rate.
+    <span class="avoid">Avoid: "simplifying", "rounding"</span>
+  </dd>
+
+  <dt>Drop lower-order terms</dt>
+  <dd>
+    The rule that <code>O(n² + n)</code> is written <code>O(n²)</code>, because for large n
+    the largest term dominates and the rest becomes negligible.
+    <span class="avoid">Avoid: "ignoring the small stuff"</span>
+  </dd>
+
+  <dt>Worst case</dt>
+  <dd>
+    The input arrangement that makes the algorithm do the most work. Big-O in interviews
+    means worst case unless stated otherwise.
+    <span class="avoid">Avoid: "the bad case", "on average"</span>
+  </dd>
+
+</dl>
+
+<h2>Classes</h2>
+
+<dl class="terms">
+
+  <dt>Constant time — <code>O(1)</code></dt>
+  <dd>
+    The work does not depend on the input size at all.
+    <span class="avoid">Avoid: "instant", "one step"</span>
+  </dd>
+
+  <dt>Logarithmic time — <code>O(log n)</code></dt>
+  <dd>
+    Each step discards a constant fraction of what remains, so the step count grows like
+    the number of times n can be divided down to 1. The log base is not written.
+    <span class="avoid">Avoid: "O(log₂ n)", "halving time"</span>
+  </dd>
+
+  <dt>Linear time — <code>O(n)</code></dt>
+  <dd>
+    The work grows in direct proportion to the input size — one pass' worth per element.
+    <span class="avoid">Avoid: "one loop", "straight time"</span>
+  </dd>
+
+  <dt>Linearithmic time — <code>O(n log n)</code></dt>
+  <dd>
+    A linear amount of work where each unit costs a logarithmic step; the complexity of
+    efficient comparison sorting.
+    <span class="avoid">Avoid: "sort time"</span>
+  </dd>
+
+  <dt>Quadratic time — <code>O(n²)</code></dt>
+  <dd>
+    The work grows with the square of the input size — typically a full nested loop, or
+    one operation per pair of elements.
+    <span class="avoid">Avoid: "nested time", "n-squared loops"</span>
+  </dd>
+
+</dl>
+
+<div class="footer-note">
+<p>Terms are added here only once you can use them correctly — the glossary is a record of
+what's understood, not a dictionary to study. Questions &rarr; ask your teacher in the session.</p>
+<p><a href="../index.html">&#8592; Workspace index</a> ·
+<a href="big-o-cheat-sheet.html">Big-O Cheat Sheet</a> ·
+<a href="../lessons/0001-what-big-o-measures.html">Lesson 1</a></p>
+</div>
+
+</body>
+</html>

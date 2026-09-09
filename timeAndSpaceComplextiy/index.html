@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time &amp; Space Complexity — Course</title>
+<link rel="stylesheet" href="assets/lesson.css">
+<style>
+  ol.roadmap { list-style: none; padding: 0; counter-reset: step; }
+  ol.roadmap li { padding: 0.6rem 0; border-bottom: 1px solid var(--rule); display: flex; gap: 0.9rem; align-items: baseline; }
+  ol.roadmap li::before { counter-increment: step; content: counter(step, decimal-leading-zero); font-family: "SF Mono", Menlo, monospace; font-size: 0.8rem; color: var(--ink-soft); }
+  ol.roadmap .done { color: var(--good); font-weight: 600; }
+  ol.roadmap .todo { color: var(--ink-soft); }
+  .cardlinks { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 1.5rem 0; }
+  .cardlinks a { display: block; border: 1px solid var(--rule); border-radius: 4px; padding: 0.8rem 1rem; text-decoration: none; background: #fff; }
+  .cardlinks a:hover { border-color: var(--accent); }
+  .cardlinks strong { display: block; }
+  .cardlinks span { font-size: 0.85rem; color: var(--ink-soft); }
+  @media (max-width: 34rem) { .cardlinks { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<p class="kicker">Teaching Workspace</p>
+<h1>Time &amp; Space Complexity</h1>
+<p class="subtitle">A guided course on Big-O, built to one mission: state and justify the complexity of a solution in a coding interview, and compare approaches under pressure.</p>
+
+<div class="callout">
+<strong>Why this course exists.</strong> In interviews you want to state the time and space
+complexity of your solution out loud, justify it in a sentence or two, and compare a
+brute-force approach against an optimised one — without guessing. Success looks like:
+deriving Big-O by counting loops and recursive calls and getting it right first try;
+explaining why constants and lower-order terms are dropped; ranking the common classes
+and naming an algorithm for each; and answering "can you do better?" by finding the
+bottleneck.
+</div>
+
+<h2>Lessons</h2>
+
+<div class="cardlinks">
+  <a href="lessons/0001-what-big-o-measures.html">
+    <strong>Lesson 1 — What Big-O Actually Measures</strong>
+    <span>Growth vs. time · counting steps · drop constants &amp; lower-order terms · growth chart · quiz</span>
+  </a>
+  <a href="lessons/0002-loops-to-big-o-linear-and-nested.html">
+    <strong>Lesson 2 — From Loops to Big-O: Linear &amp; Nested</strong>
+    <span>Single / sequential / nested / triangular loops · O(n·m) · worst vs best case · your own repo code</span>
+  </a>
+  <a href="lessons/0003-logarithmic-loops.html">
+    <strong>Lesson 3 — Logarithmic Loops → O(log n)</strong>
+    <span>Cut-by-a-fraction pattern · <code>n = n/10</code> &amp; <code>i *= 2</code> · base doesn't matter · binary search · O(n log n)</span>
+  </a>
+  <a href="lessons/0004-ranking-the-common-classes.html">
+    <strong>Lesson 4 — Ranking the Common Classes</strong>
+    <span>The 7 classes best→worst · a named algorithm for each · reading the growth chart · what n each class handles · interleaved drill</span>
+  </a>
+  <a href="lessons/0005-space-complexity-and-the-call-stack.html">
+    <strong>Lesson 5 — Space Complexity &amp; the Call Stack</strong>
+    <span>Auxiliary vs input memory · O(1) in-place vs O(n) structures · the recursion call stack · the Fibonacci gotcha · does the output count</span>
+  </a>
+  <a href="lessons/0006-can-you-do-better.html">
+    <strong>Lesson 6 — "Can You Do Better?"</strong>
+    <span>Name the bottleneck · the 3 levers (hash / sort / precompute) · Two Sum worked O(n²)→O(n) · say the trade-off in 3 sentences · mission complete</span>
+  </a>
+</div>
+
+<h2>Reference — revisit these</h2>
+
+<div class="cardlinks">
+  <a href="reference/big-o-cheat-sheet.html">
+    <strong>Big-O Cheat Sheet</strong>
+    <span>Classes ranked · code shape → Big-O · data-structure &amp; sorting tables · space checklist. Print before interviews.</span>
+  </a>
+  <a href="reference/glossary.html">
+    <strong>Glossary</strong>
+    <span>The canonical vocabulary used across every lesson.</span>
+  </a>
+  <a href="reference/resources.html">
+    <strong>Resources</strong>
+    <span>Curated high-trust sources and communities.</span>
+  </a>
+</div>
+
+<h2>Roadmap</h2>
+
+<ol class="roadmap">
+  <li><span class="done">What Big-O actually measures</span> — <a href="lessons/0001-what-big-o-measures.html">done</a></li>
+  <li><span class="done">From loops to Big-O: linear &amp; nested</span> — <a href="lessons/0002-loops-to-big-o-linear-and-nested.html">done</a></li>
+  <li><span class="done">Logarithmic loops: <code>i *= 2</code> and <code>n = n / 10</code> &rarr; O(log n)</span> — <a href="lessons/0003-logarithmic-loops.html">done</a></li>
+  <li><span class="done">The common classes: ranking drill + reading the growth chart</span> — <a href="lessons/0004-ranking-the-common-classes.html">done</a></li>
+  <li><span class="done">Space complexity, the recursion call stack, and the output array</span> — <a href="lessons/0005-space-complexity-and-the-call-stack.html">done</a></li>
+  <li><span class="done">"Can you do better?": spotting the bottleneck, trading time for space</span> — <a href="lessons/0006-can-you-do-better.html">done</a></li>
+</ol>
+
+<p style="margin-top:1rem"><strong>All six lessons cover the mission.</strong> Next is
+fluency: reps on real problems (LeetCode Two Sum, Contains Duplicate, Valid Anagram) and
+a mixed final assessment — ask your teacher to run one.</p>
+
+<h2>Working with your teacher</h2>
+<p>
+These lessons are half the loop. The other half is asking the agent in your Claude Code
+session to explain anything unclear, analyse your own <code>.js</code> solutions from this
+repo, or quiz you live. That feedback loop is what makes it stick.
+</p>
+
+<div class="footer-note">
+<p class="no-print">The steering files — <code>MISSION.md</code>, <code>RESOURCES.md</code>,
+<code>GLOSSARY.md</code>, <code>NOTES.md</code>, <code>learning-records/</code> — are the
+machine-readable source of truth your teacher reads between sessions. The pages linked
+above are the readable versions of the same content.</p>
+</div>
+
+</body>
+</html>

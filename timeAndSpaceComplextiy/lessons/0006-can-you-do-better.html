@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 6 · "Can You Do Better?"</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<script src="../assets/quiz.js"></script>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Lesson 6</p>
+<h1>"Can You Do Better?"</h1>
+<p class="subtitle">The win: when the interviewer asks this, you can name the bottleneck line, propose a faster approach, and state exactly what it costs in space. This is the last core skill in your <a href="../MISSION.md">mission</a>.</p>
+
+<hr>
+
+<div class="callout">
+"Can you do better?" is not a trick. It means: <strong>your brute force works — now find
+the one part doing the most work and make that part cheaper.</strong> You already have
+every tool for this from <a href="0001-what-big-o-measures.html">Lessons 1</a>–<a href="0005-space-complexity-and-the-call-stack.html">5</a>.
+</div>
+
+<h2>1. The move, in three steps</h2>
+
+<div class="rule-box">
+<ol>
+<li><strong>State where you are.</strong> "This brute force is <code>O(n²)</code> time,
+<code>O(1)</code> space."</li>
+<li><strong>Name the bottleneck.</strong> Which line or structure produces the dominant
+term? For <code>O(n²)</code> it's almost always an inner loop that <em>searches</em>.</li>
+<li><strong>Make that operation cheaper</strong> with one of the three levers below,
+then restate the complexity <em>and its new space cost</em>.</li>
+</ol>
+</div>
+
+<h3>The three levers</h3>
+<table>
+<thead><tr><th>Lever</th><th>Turns this…</th><th>…into this</th><th>Space cost</th></tr></thead>
+<tbody>
+<tr><td><strong>Hash map / Set</strong></td><td>"is <code>x</code> in here?" scan — <code>O(n)</code></td><td><code>O(1)</code> lookup</td><td><code>O(n)</code></td></tr>
+<tr><td><strong>Sort first</strong></td><td>unordered pair/range work — <code>O(n²)</code></td><td><code>O(n log n)</code> + a two-pointer <code>O(n)</code> pass</td><td><code>O(1)</code>–<code>O(n)</code></td></tr>
+<tr><td><strong>Precompute / prefix sums</strong></td><td>re-summing a range every query — <code>O(n)</code> each</td><td><code>O(1)</code> per query</td><td><code>O(n)</code></td></tr>
+</tbody>
+</table>
+
+<h2>2. Worked example: Two Sum</h2>
+
+<p><em>Given an array and a <code>target</code>, return the indices of the two numbers that add to <code>target</code>.</em></p>
+
+<h3>Brute force</h3>
+<pre><code>function twoSum(nums, target) {
+  for (let i = 0; i &lt; nums.length; i++) {
+    for (let j = i + 1; j &lt; nums.length; j++) {   // &#9668; the bottleneck
+      if (nums[i] + nums[j] === target) return [i, j];
+    }
+  }
+}</code></pre>
+<p>
+<strong>Step 1:</strong> <code>O(n²)</code> time, <code>O(1)</code> space.
+<strong>Step 2:</strong> the inner loop is a <em>search</em> — "does a matching partner
+for <code>nums[i]</code> exist later in the array?" That search is <code>O(n)</code>, and
+we do it <code>n</code> times.
+</p>
+
+<h3>Step 3: make the search O(1)</h3>
+<p>
+The partner we want for <code>nums[i]</code> is exactly <code>target - nums[i]</code>.
+"Has this value been seen?" is a <strong>hash-map lookup</strong> — lever 1.
+</p>
+<pre><code>function twoSum(nums, target) {
+  const seen = new Map();                 // value -&gt; index
+  for (let i = 0; i &lt; nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need), i];   // O(1), not O(n)
+    seen.set(nums[i], i);
+  }
+}</code></pre>
+
+<figure>
+<svg viewBox="0 0 520 150" role="img" aria-label="n comparisons on the left collapsing into one hash lookup on the right" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .b { fill: #f2e3e3; stroke: #c98f8f; }
+    .g { fill: #dbe6dd; stroke: #3a7d44; }
+    .t { font: 11px -apple-system, sans-serif; fill: #555; }
+  </style>
+  <text class="t" x="20" y="16">inner loop: up to n comparisons</text>
+  <rect class="b" x="20" y="24" width="16" height="16"/><rect class="b" x="40" y="24" width="16" height="16"/><rect class="b" x="60" y="24" width="16" height="16"/><rect class="b" x="80" y="24" width="16" height="16"/><rect class="b" x="100" y="24" width="16" height="16"/><rect class="b" x="120" y="24" width="16" height="16"/><rect class="b" x="140" y="24" width="16" height="16"/><rect class="b" x="160" y="24" width="16" height="16"/>
+  <text class="t" x="200" y="37">&#8594;</text>
+  <text class="t" x="230" y="16">hash lookup: 1 step</text>
+  <rect class="g" x="230" y="24" width="16" height="16"/>
+  <text class="t" x="20" y="80">&#215; n outer passes  =  O(n&#178;)</text>
+  <text class="t" x="230" y="80">&#215; n outer passes  =  O(n)</text>
+  <text class="t" x="20" y="120">cost of the win: the Map holds up to n entries &#8594; O(n) space</text>
+</svg>
+<figcaption>The bottleneck — an <code>O(n)</code> search done <code>n</code> times — becomes an <code>O(1)</code> lookup done <code>n</code> times.</figcaption>
+</figure>
+
+<h3>Say it in the interview</h3>
+<blockquote style="border-left:3px solid var(--rule);padding-left:1rem;color:var(--ink-soft);font-style:italic">
+"Brute force is <code>O(n²)</code> time, <code>O(1)</code> space — a nested loop checking
+every pair. The inner loop is really searching for <code>target - nums[i]</code>, so I
+can store seen values in a hash map and look the partner up in <code>O(1)</code>. That's
+<code>O(n)</code> time, at the cost of <code>O(n)</code> space for the map."
+</blockquote>
+
+<h2>3. Second example: contains a duplicate?</h2>
+<table>
+<thead><tr><th>Approach</th><th>Time</th><th>Space</th></tr></thead>
+<tbody>
+<tr><td>Compare every pair (nested loop)</td><td><code>O(n²)</code></td><td><code>O(1)</code></td></tr>
+<tr><td>Add each to a <code>Set</code>, stop if already present</td><td><code>O(n)</code></td><td><code>O(n)</code></td></tr>
+<tr><td>Sort, then check adjacent elements</td><td><code>O(n log n)</code></td><td><code>O(1)</code></td></tr>
+</tbody>
+</table>
+<p>
+Three valid answers with different trade-offs — and naming the trade-off is the point.
+If the interviewer says "no extra space", the sort version is your answer even though
+it's slower.
+</p>
+
+<div class="callout">
+<strong>The pattern behind both examples:</strong> a nested loop whose inner job is a
+<em>search</em> is the #1 thing "can you do better?" is asking about. Hash map for
+membership, sort for order. Trading <code>O(n)</code> space to drop a factor of
+<code>n</code> from time is almost always the right call unless told otherwise.
+</div>
+
+<h2>4. Check yourself</h2>
+
+<div class="quiz" data-answer="1"
+  data-explain="The inner loop searches for a complement. Replacing that O(n) search with an O(1) hash lookup makes the whole thing O(n) time, O(n) space.">
+  <p class="q">A solution has a nested loop where the inner loop searches for a value. Best first improvement to reach for?</p>
+  <ul>
+    <li><button class="opt">Unroll the inner loop by hand</button></li>
+    <li><button class="opt">Store seen values in a hash map</button></li>
+    <li><button class="opt">Cache the whole array twice over</button></li>
+    <li><button class="opt">Convert the loops into recursion</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="2"
+  data-explain="The hash-map version is O(n) time but allocates a map of up to n entries, so O(n) space. You traded space to save time.">
+  <p class="q">The hash-map Two Sum is <code>O(n)</code> time. What is its space complexity, and why?</p>
+  <ul>
+    <li><button class="opt">O(1), because it uses one loop</button></li>
+    <li><button class="opt">O(log n), because lookups are logarithmic</button></li>
+    <li><button class="opt">O(n), because the map holds n entries</button></li>
+    <li><button class="opt">O(n²), because it stores every pair</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="0"
+  data-explain="Sorting then checking adjacent elements is O(n log n) time and O(1) extra space - the right pick when extra space is forbidden.">
+  <p class="q">Interviewer: "Find a duplicate, but you may not use extra space." Which approach?</p>
+  <ul>
+    <li><button class="opt">Sort, then scan adjacent elements</button></li>
+    <li><button class="opt">Add each element to a Set</button></li>
+    <li><button class="opt">Build a frequency hash map</button></li>
+    <li><button class="opt">Recurse over every possible pair</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="3"
+  data-explain="n up to 10^6 means O(n^2) is ~10^12 operations - too slow. The hint is telling you to find an O(n) or O(n log n) approach.">
+  <p class="q">"<code>n</code> can be up to a million" — what is the interviewer really telling you?</p>
+  <ul>
+    <li><button class="opt">Use recursion instead of a loop</button></li>
+    <li><button class="opt">The array will always fit in memory</button></li>
+    <li><button class="opt">An O(1) space solution is required</button></li>
+    <li><button class="opt">Brute-force O(n²) will not pass</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<hr>
+
+<h2>You've hit the mission. Now go test it.</h2>
+<p>
+That's every core skill in <a href="../MISSION.md">MISSION.md</a>: derive Big-O from
+loops and recursion, rank the classes, state space separately (call stack included), and
+answer "can you do better?". Fluency now comes from reps on real problems:
+</p>
+<ul>
+<li><strong><a href="https://leetcode.com/problems/two-sum/">LeetCode — Two Sum</a>,
+then <a href="https://leetcode.com/problems/contains-duplicate/">Contains Duplicate</a>,
+<a href="https://leetcode.com/problems/valid-anagram/">Valid Anagram</a>.</strong> For
+each: write the brute force, state both complexities out loud, then optimise and state
+them again.</li>
+<li><strong><a href="https://www.reddit.com/r/leetcode/">r/leetcode</a></strong> and each
+problem's <strong><a href="https://leetcode.com/discuss/">LeetCode Discuss</a></strong>
+threads — post your analysis, compare it to the crowd. That's where the
+<a href="../reference/resources.html">wisdom</a> is.</li>
+</ul>
+
+<div class="footer-note">
+<p><strong>Ask your teacher</strong> to run you a mixed final assessment — ten problems,
+brute-force and optimal complexity for each, time and space — whenever you're ready.
+Or bring any problem you're stuck analysing.</p>
+<p><a href="../reference/glossary.html">Glossary</a> ·
+<a href="../reference/big-o-cheat-sheet.html">Cheat Sheet</a> ·
+<a href="../index.html">Workspace index</a></p>
+</div>
+
+<nav class="nav">
+  <span><a href="0005-space-complexity-and-the-call-stack.html">&#8592; Lesson 5</a></span>
+  <span><a href="../index.html">Index</a></span>
+  <span>Mission complete &#8212; practice + assessment next</span>
+</nav>
+
+</body>
+</html>

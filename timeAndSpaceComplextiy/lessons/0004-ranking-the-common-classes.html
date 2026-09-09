@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 4 · Ranking the Common Classes</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<script src="../assets/quiz.js"></script>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Lesson 4</p>
+<h1>Ranking the Common Classes</h1>
+<p class="subtitle">The win: you can order the seven classes fastest-to-slowest without thinking, name a real algorithm for each, and read any growth chart — the "compare two approaches" muscle for interviews.</p>
+
+<hr>
+
+<div class="callout">
+This lesson <strong>interleaves</strong> everything from
+<a href="0001-what-big-o-measures.html">Lessons 1</a>–<a href="0003-logarithmic-loops.html">3</a>.
+Mixing shapes together (instead of drilling one at a time) is harder now and sticks
+better later — it's how the recognition holds up under interview pressure.
+</div>
+
+<h2>1. The ladder, best to worst</h2>
+
+<table>
+<thead><tr><th>Rank</th><th>Class</th><th>Name</th><th>A real algorithm</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>O(1)</code></td><td>constant</td><td>Hash-map lookup; array access by index; stack push/pop</td></tr>
+<tr><td>2</td><td><code>O(log n)</code></td><td>logarithmic</td><td>Binary search; insert into a balanced BST</td></tr>
+<tr><td>3</td><td><code>O(n)</code></td><td>linear</td><td>Linear search (your <code>searchElement</code>); sum / max of an array</td></tr>
+<tr><td>4</td><td><code>O(n log n)</code></td><td>linearithmic</td><td>Merge sort; heap sort; <code>Array.prototype.sort</code></td></tr>
+<tr><td>5</td><td><code>O(n²)</code></td><td>quadratic</td><td>Bubble / insertion sort; comparing all pairs; your <code>pattern1</code></td></tr>
+<tr><td>6</td><td><code>O(2ⁿ)</code></td><td>exponential</td><td>Naive recursive Fibonacci; generating every subset</td></tr>
+<tr><td>7</td><td><code>O(n!)</code></td><td>factorial</td><td>Generating every permutation; brute-force travelling salesman</td></tr>
+</tbody>
+</table>
+
+<div class="rule-box">
+<h3>Anchor phrase</h3>
+<p style="margin-bottom:0">
+"<strong>C</strong>an <strong>L</strong>ittle <strong>N</strong>erds <strong>N</strong>ot
+<strong>Q</strong>uit <strong>E</strong>xams <strong>F</strong>ast" &rarr;
+<strong>C</strong>onstant, <strong>L</strong>og, li<strong>N</strong>ear,
+li<strong>N</strong>earithmic, <strong>Q</strong>uadratic,
+<strong>E</strong>xponential, <strong>F</strong>actorial.
+</p>
+</div>
+
+<h2>2. What each shape looks like</h2>
+
+<figure>
+<svg viewBox="0 0 540 380" role="img" aria-label="Growth curves for constant, log, linear, linearithmic, quadratic, and exponential" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .ax { stroke: #999; stroke-width: 1; }
+    .lb { font: 11px -apple-system, sans-serif; fill: #555; }
+    .c  { fill: none; stroke-width: 2.5; }
+  </style>
+  <line class="ax" x1="60" y1="20" x2="60" y2="330"/>
+  <line class="ax" x1="60" y1="330" x2="510" y2="330"/>
+  <text class="lb" x="270" y="360">input size  n  &#8594;</text>
+  <text class="lb" x="12" y="185" transform="rotate(-90 12 185)">operations  &#8594;</text>
+
+  <polyline class="c" stroke="#9aa0a6" points="60,322 500,322"/>
+  <polyline class="c" stroke="#3a7d44" points="60,330 109,320 158,315 207,312 256,309 304,307 353,306 402,305 451,304 500,303"/>
+  <polyline class="c" stroke="#1f6feb" points="60,322 109,313 158,304 207,295 256,286 304,278 353,269 402,260 451,251 500,243"/>
+  <polyline class="c" stroke="#b5820b" points="60,330 109,314 158,292 207,265 256,235 304,203 353,168 402,132 451,93 500,53"/>
+  <polyline class="c" stroke="#7a1f1f" points="60,322 109,297 158,258 207,203 256,133 300,25 500,25"/>
+  <polyline class="c" stroke="#5a2d82" points="60,320 100,300 135,255 165,185 190,90 205,25"/>
+
+  <text class="lb" x="504" y="320" fill="#9aa0a6">O(1)</text>
+  <text class="lb" x="504" y="301" fill="#3a7d44">O(log n)</text>
+  <text class="lb" x="504" y="241" fill="#1f6feb">O(n)</text>
+  <text class="lb" x="470" y="48"  fill="#b5820b">O(n log n)</text>
+  <text class="lb" x="300" y="18"  fill="#7a1f1f">O(n&#178;)</text>
+  <text class="lb" x="150" y="18"  fill="#5a2d82">O(2&#8319;)</text>
+</svg>
+<figcaption>
+Read it by <em>shape</em>: flat (<code>1</code>), nearly flat and bending down
+(<code>log n</code>), straight (<code>n</code>), gently curving up
+(<code>n log n</code>), curving up hard (<code>n²</code>), a near-vertical wall
+(<code>2ⁿ</code>). Pattern after <a href="https://www.bigocheatsheet.com/">bigocheatsheet.com</a>.
+</figcaption>
+</figure>
+
+<p>
+Two things to notice on the chart. <strong>Constants set the starting height, not the
+shape</strong> — an <code>O(n)</code> line with a big constant can start above an
+<code>O(n²)</code> curve, but the curve always overtakes it. And <strong>the crossover is
+often at small n</strong>: past a few dozen elements, the higher class has already won.
+</p>
+
+<h2>3. The interview heuristic: what n can each class handle?</h2>
+
+<p>
+Roughly a billion simple operations per second. If the expected input is <code>n</code>,
+these are the classes that finish in about a second:
+</p>
+
+<table>
+<thead><tr><th>If n is up to…</th><th>…this is fast enough</th></tr></thead>
+<tbody>
+<tr><td>1,000,000,000</td><td><code>O(log n)</code>, <code>O(1)</code></td></tr>
+<tr><td>10,000,000</td><td><code>O(n)</code>, <code>O(n log n)</code></td></tr>
+<tr><td>~10,000</td><td><code>O(n²)</code></td></tr>
+<tr><td>~500</td><td><code>O(n³)</code></td></tr>
+<tr><td>~25</td><td><code>O(2ⁿ)</code></td></tr>
+<tr><td>~11</td><td><code>O(n!)</code></td></tr>
+</tbody>
+</table>
+
+<p>
+This runs backwards too: if the interviewer says "<code>n</code> can be up to a million",
+they've just told you an <code>O(n²)</code> solution won't pass — you need
+<code>O(n log n)</code> or better. That's often the whole hint.
+</p>
+
+<h2>4. Interleaved practice — name the class</h2>
+
+<p>Work through each before checking. Say the class out loud, then the reason.</p>
+
+<div class="quiz" data-answer="1"
+  data-explain="Two nested loops each running n times: n * n. Quadratic.">
+  <p class="q">A: <code>for i in 0..n { for j in 0..n { sum += grid[i][j] } }</code></p>
+  <ul>
+    <li><button class="opt">This snippet is O of n</button></li>
+    <li><button class="opt">This snippet is O of n squared</button></li>
+    <li><button class="opt">This snippet is O of log n</button></li>
+    <li><button class="opt">This snippet is O of one</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="2"
+  data-explain="The index doubles each pass, so it runs log-base-2 of n times. Logarithmic.">
+  <p class="q">B: <code>for (let i = 1; i &lt; n; i *= 2) { print(i) }</code></p>
+  <ul>
+    <li><button class="opt">This snippet is O of n</button></li>
+    <li><button class="opt">This snippet is O of one</button></li>
+    <li><button class="opt">This snippet is O of log n</button></li>
+    <li><button class="opt">This snippet is O of n squared</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="0"
+  data-explain="Two separate (non-nested) loops of n add: n + n = 2n. Drop the constant, linear.">
+  <p class="q">C: <code>for i in 0..n { a() }</code> then <code>for j in 0..n { b() }</code></p>
+  <ul>
+    <li><button class="opt">This snippet is O of n</button></li>
+    <li><button class="opt">This snippet is O of n squared</button></li>
+    <li><button class="opt">This snippet is O of two n</button></li>
+    <li><button class="opt">This snippet is O of log n</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="3"
+  data-explain="Outer loop n times; each pass sorts (or binary-searches) at O(log n) or does an O(n) inner pass. A sort inside a loop of n is n * n log n, but a binary search inside is n log n. Here it is a binary search: n log n.">
+  <p class="q">D: <code>for i in 0..n { binarySearch(sorted, arr[i]) }</code></p>
+  <ul>
+    <li><button class="opt">This snippet is O of n</button></li>
+    <li><button class="opt">This snippet is O of log n</button></li>
+    <li><button class="opt">This snippet is O of n squared</button></li>
+    <li><button class="opt">This snippet is O of n log n</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="1"
+  data-explain="Object key lookup is O(1) average. The loop runs a fixed 3 times regardless of n, so the whole thing is constant.">
+  <p class="q">E: <code>for (const k of ['a','b','c']) { total += counts[k] }</code></p>
+  <ul>
+    <li><button class="opt">This snippet is O of n</button></li>
+    <li><button class="opt">This snippet is O of one</button></li>
+    <li><button class="opt">This snippet is O of log n</button></li>
+    <li><button class="opt">This snippet is O of three</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="2"
+  data-explain="n can be up to 1,000,000, so n^2 is 10^12 operations - far too slow. You need O(n log n) or better.">
+  <p class="q">Interviewer: "<code>n</code> can be up to 1,000,000." What does that rule out?</p>
+  <ul>
+    <li><button class="opt">It rules out any O(n) solution</button></li>
+    <li><button class="opt">It rules out any O(log n) solution</button></li>
+    <li><button class="opt">It rules out an O(n²) solution</button></li>
+    <li><button class="opt">It rules out an O(1) solution</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<hr>
+
+<h2>Primary source</h2>
+<p>
+Bookmark: <a href="https://www.bigocheatsheet.com/"><strong>bigocheatsheet.com</strong></a> —
+the growth chart at the top is the exact picture from section 2, and the tables give you
+the named algorithms. Then re-read the workspace
+<a href="../reference/big-o-cheat-sheet.html">cheat sheet</a> end to end; after this
+lesson all of it should make sense.
+</p>
+
+<div class="footer-note">
+<p><strong>Stuck?</strong> Ask your teacher. Good ones now: "give me ten mixed snippets
+and grade me", "why is naive Fibonacci <code>O(2ⁿ)</code>?", "walk me through comparing
+a brute-force vs. optimal solution to a real LeetCode problem".</p>
+<p><a href="../reference/glossary.html">Glossary</a> ·
+<a href="../reference/big-o-cheat-sheet.html">Cheat Sheet</a> ·
+<a href="../index.html">Workspace index</a></p>
+</div>
+
+<nav class="nav">
+  <span><a href="0003-logarithmic-loops.html">&#8592; Lesson 3</a></span>
+  <span><a href="../index.html">Index</a></span>
+  <span>Lesson 5: space complexity &amp; the call stack &#8594; (next session)</span>
+</nav>
+
+</body>
+</html>

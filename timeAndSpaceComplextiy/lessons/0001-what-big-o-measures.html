@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 1 · What Big-O Actually Measures</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<script src="../assets/quiz.js"></script>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Lesson 1</p>
+<h1>What Big-O Actually Measures</h1>
+<p class="subtitle">The win: after this lesson you can say precisely what <code>O(n)</code> means, and explain why <code>O(500n)</code> is the same thing.</p>
+
+<hr>
+
+<h2>1. It measures growth, not time</h2>
+
+<p>
+Big-O does <em>not</em> tell you how many milliseconds your code takes. That depends on
+the machine, the language, the JS engine, what else is running. Those numbers change;
+Big-O is meant to be the thing that <strong>doesn't</strong>.
+</p>
+
+<p>
+Big-O answers one question: <strong>as the input gets bigger, how does the amount of
+work grow?</strong> The input size is called <code>n</code> (see
+<a href="../reference/glossary.html">glossary: input size</a>). Work usually means "number of basic
+steps the algorithm performs".
+</p>
+
+<div class="callout">
+<strong>Interview framing.</strong> Interviewers care about growth because real inputs
+get large. Code that is fine for <code>n = 10</code> can be unusable at
+<code>n = 1,000,000</code>. Big-O is how you predict that without running anything.
+<span class="no-print"> (<a href="https://www.interviewcake.com/article/java/big-o-notation-time-and-space-complexity">Interview Cake</a>)</span>
+</div>
+
+<h2>2. Worked example: count the steps</h2>
+
+<p>Here are two JavaScript functions. Count how many times the core line runs, as a function of <code>n = arr.length</code>.</p>
+
+<h3>Function A — print every element</h3>
+<pre><code>function printAll(arr) {
+  for (let i = 0; i &lt; arr.length; i++) {
+    console.log(arr[i]);      // runs n times
+  }
+}</code></pre>
+<p>
+The loop body runs once per element: <code>n</code> times. If <code>n</code> doubles,
+the work doubles. That straight-line relationship is <strong><code>O(n)</code></strong> —
+"linear time".
+</p>
+
+<h3>Function B — print every pair</h3>
+<pre><code>function printPairs(arr) {
+  for (let i = 0; i &lt; arr.length; i++) {
+    for (let j = 0; j &lt; arr.length; j++) {
+      console.log(arr[i], arr[j]);   // runs n * n times
+    }
+  }
+}</code></pre>
+<p>
+For each of the <code>n</code> outer iterations, the inner loop runs <code>n</code>
+times: <code>n &times; n = n²</code> steps. If <code>n</code> doubles, the work goes up
+<em>four times</em>. That is <strong><code>O(n²)</code></strong> — "quadratic time".
+</p>
+
+<div class="rule-box">
+<h3>The counting recipe</h3>
+<ol>
+<li>Pick the input size <code>n</code>.</li>
+<li>Find the operation that runs the most often.</li>
+<li>Write, in terms of <code>n</code>, how many times it runs.</li>
+<li>Simplify with the two rules below.</li>
+</ol>
+</div>
+
+<h2>3. The two rules that turn a step-count into Big-O</h2>
+
+<div class="rule-box">
+<h3>Rule 1 — Drop the constants</h3>
+<p>
+<code>O(2n)</code>, <code>O(500n)</code>, and <code>O(n/2)</code> are all written
+<strong><code>O(n)</code></strong>. A constant multiplier shifts the line's steepness
+but not its <em>shape</em> — it is still a straight line. Big-O only cares about shape.
+</p>
+<p style="margin-bottom:0"><em>Example:</em> a loop that does 3 operations per element is
+<code>3n</code> steps &rarr; still <code>O(n)</code>.</p>
+</div>
+
+<div class="rule-box">
+<h3>Rule 2 — Drop the lower-order terms</h3>
+<p>
+<code>O(n² + n)</code> is written <strong><code>O(n²)</code></strong>. For large
+<code>n</code>, the biggest term dwarfs everything else: at <code>n = 1000</code>,
+<code>n²</code> is 1,000,000 and the <code>+ n</code> is a rounding error.
+</p>
+<p style="margin-bottom:0"><em>Example:</em> one loop of <code>n</code> then a nested loop
+of <code>n²</code> is <code>n² + n</code> steps &rarr; <code>O(n²)</code>.</p>
+</div>
+
+<p>
+Both rules exist for the same reason: Big-O describes behaviour <em>as <code>n</code>
+approaches large sizes</em>, where only the fastest-growing part matters.
+</p>
+
+<h2>4. See it: growth-rate shapes</h2>
+
+<figure>
+<svg viewBox="0 0 540 360" role="img" aria-label="Line chart comparing growth rates of common Big-O classes as n increases" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .axis { stroke: #999; stroke-width: 1; }
+    .grid { stroke: #e5e0d4; stroke-width: 1; }
+    .lbl  { font: 11px -apple-system, sans-serif; fill: #555; }
+    .curve { fill: none; stroke-width: 2.5; }
+  </style>
+
+  <!-- axes -->
+  <line class="axis" x1="60" y1="20" x2="60" y2="320"/>
+  <line class="axis" x1="60" y1="320" x2="510" y2="320"/>
+  <text class="lbl" x="270" y="350">input size  n  &#8594;</text>
+  <text class="lbl" x="12" y="175" transform="rotate(-90 12 175)">operations  &#8594;</text>
+
+  <!-- curves -->
+  <polyline class="curve" stroke="#9aa0a6" points="60,313 500,313"/>
+  <polyline class="curve" stroke="#3a7d44" points="60,320 109,312 158,308 207,305 256,303 304,301 353,299 402,298 451,296 500,295"/>
+  <polyline class="curve" stroke="#1f6feb" points="60,313 109,305 158,298 207,290 256,283 304,275 353,268 402,260 451,253 500,245"/>
+  <polyline class="curve" stroke="#b5820b" points="60,320 109,305 158,285 207,260 256,233 304,204 353,173 402,140 451,106 500,71"/>
+  <polyline class="curve" stroke="#7a1f1f" points="60,313 109,290 158,253 207,200 256,133 304,50 320,20 500,20"/>
+
+  <!-- curve labels -->
+  <text class="lbl" x="504" y="311" fill="#9aa0a6">O(1)</text>
+  <text class="lbl" x="504" y="292" fill="#3a7d44">O(log n)</text>
+  <text class="lbl" x="504" y="243" fill="#1f6feb">O(n)</text>
+  <text class="lbl" x="470" y="64"  fill="#b5820b">O(n log n)</text>
+  <text class="lbl" x="330" y="16"  fill="#7a1f1f">O(n&#178;)</text>
+</svg>
+<figcaption>
+Same axes, five shapes. <code>O(1)</code> is flat — input size doesn't matter.
+<code>O(n)</code> is a straight line. <code>O(n²)</code> curls upward and runs off the
+chart almost immediately. The steepness of a line can be scaled by a constant; the
+<em>shape</em> cannot. Data pattern after
+<a href="https://www.bigocheatsheet.com/">bigocheatsheet.com</a>.
+</figcaption>
+</figure>
+
+<h2>5. Check yourself</h2>
+
+<div class="quiz" data-answer="1"
+  data-explain="A constant multiplier (here, 3) is dropped by Rule 1. The loop still does work proportional to n, so it is O(n).">
+  <p class="q">A loop runs <code>n</code> times and does exactly 3 operations each iteration. What is its time complexity?</p>
+  <ul>
+    <li><button class="opt">It is written as O(3n)</button></li>
+    <li><button class="opt">It is written as O(n)</button></li>
+    <li><button class="opt">It is written as O(3)</button></li>
+    <li><button class="opt">It is written as O(1)</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="2"
+  data-explain="Steps total n^2 + n. Rule 2 drops the lower-order + n term because n^2 grows faster, leaving O(n^2).">
+  <p class="q">A function does one loop of <code>n</code> steps, then a separate nested loop of <code>n²</code> steps. Big-O?</p>
+  <ul>
+    <li><button class="opt">This is O of n plus one</button></li>
+    <li><button class="opt">This is O of two n</button></li>
+    <li><button class="opt">This is O of n squared</button></li>
+    <li><button class="opt">This is O of n cubed</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="0"
+  data-explain="Big-O measures how work grows with input size, not clock time. Milliseconds depend on hardware and language; growth rate does not.">
+  <p class="q">Which statement about Big-O is correct?</p>
+  <ul>
+    <li><button class="opt">It describes how work grows with input</button></li>
+    <li><button class="opt">It describes the runtime in exact milliseconds</button></li>
+    <li><button class="opt">It describes the memory used by hardware</button></li>
+    <li><button class="opt">It describes the number of source code lines</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<hr>
+
+<h2>Primary source</h2>
+<p>
+Read next: <a href="https://www.interviewcake.com/article/java/big-o-notation-time-and-space-complexity"><strong>Interview Cake — "Big O Notation: Time &amp; Space Complexity"</strong></a>.
+It covers exactly this lesson plus the vocabulary interviewers expect. 15 minutes.
+</p>
+
+<div class="footer-note">
+<p><strong>Stuck on anything?</strong> Ask your teacher (the agent in this session).
+"Why does <code>n²</code> beat <code>n</code> for large n?", "walk me through counting
+steps in <em>my</em> <code>secondLargest.js</code>", "what's <code>O(log n)</code>
+really?" — all fair game. That's what the feedback loop is for.</p>
+<p>See also: <a href="../reference/big-o-cheat-sheet.html">Reference: Big-O Cheat Sheet</a> ·
+<a href="../reference/glossary.html">Glossary</a> · <a href="../index.html">Workspace index</a></p>
+</div>
+
+<nav class="nav">
+  <span>&#8592; (start)</span>
+  <span><a href="../index.html">Index</a></span>
+  <span>Lesson 2: deriving Big-O from loops &#8594; (next session)</span>
+</nav>
+
+</body>
+</html>

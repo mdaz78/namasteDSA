@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 3 · Logarithmic Loops → O(log n)</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<script src="../assets/quiz.js"></script>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Lesson 3</p>
+<h1>Logarithmic Loops &rarr; O(log n)</h1>
+<p class="subtitle">The win: you can spot the "cut the problem by a constant factor each step" pattern and name it <code>O(log n)</code> on sight — and explain why <code>n = 1,000,000</code> takes only ~20 steps.</p>
+
+<hr>
+
+<div class="callout">
+<strong>From <a href="0002-loops-to-big-o-linear-and-nested.html">Lesson 2</a>:</strong> a
+loop that steps <code>i++</code> runs <code>n</code> times &rarr; <code>O(n)</code>. This
+lesson is about loops that <em>don't</em> step by one — they multiply or divide — and run
+far fewer times.
+</div>
+
+<h2>1. The one idea</h2>
+
+<p>
+<strong><code>O(log n)</code> shows up when each step throws away a constant fraction of
+what's left</strong> — half of it, nine-tenths of it, doesn't matter which fraction. The
+question "how many times can I cut <code>n</code> down before there's nothing left?" has
+the answer <code>log n</code>.
+</p>
+
+<h2>2. Worked example: your <code>countDigits.js</code></h2>
+
+<pre><code>function countDigits(n) {
+  if (n === 0) return 1;
+  let digits = 0;
+  n = Math.abs(n);
+  while (n &gt; 0) {
+    n = Math.floor(n / 10);   // n loses a factor of 10 each pass
+    digits += 1;
+  }
+  return digits;
+}</code></pre>
+
+<p>Trace it for <code>n = 47831</code>:</p>
+
+<table>
+<thead><tr><th>Pass</th><th>n becomes</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>4783</td></tr>
+<tr><td>2</td><td>478</td></tr>
+<tr><td>3</td><td>47</td></tr>
+<tr><td>4</td><td>4</td></tr>
+<tr><td>5</td><td>0 &rarr; stop</td></tr>
+</tbody>
+</table>
+
+<p>
+A 5-digit number takes 5 passes. A 10-digit number takes 10. The number of passes is the
+number of digits, which is about <code>log&#8321;&#8320;(n)</code>. In Big-O terms that is
+<strong><code>O(log n)</code></strong>.
+</p>
+
+<div class="rule-box">
+<h3>The base doesn't matter</h3>
+<p>
+This loop divides by 10, so it's <code>log&#8321;&#8320; n</code>. Binary search divides by
+2, so it's <code>log&#8322; n</code>. In Big-O <strong>both are just <code>O(log n)</code></strong> —
+changing the log base only multiplies by a constant (<code>log&#8322; n =
+log&#8321;&#8320; n &times; 3.32&#8230;</code>), and <a href="../reference/glossary.html">constants
+are dropped</a>. Don't write the base.
+</p>
+</div>
+
+<h2>3. The other shape: <code>i *= 2</code></h2>
+
+<pre><code>for (let i = 1; i &lt; n; i *= 2) {
+  doWork(i);
+}</code></pre>
+
+<p>
+<code>i</code> goes <code>1, 2, 4, 8, 16, &#8230;</code> — doubling until it passes
+<code>n</code>. Starting at 1 and doubling, it takes <code>log&#8322; n</code> steps to
+reach <code>n</code>. Same complexity, approached from the other direction:
+<strong><code>O(log n)</code></strong>.
+</p>
+
+<p>
+<strong>Whenever the loop variable is multiplied or divided</strong> (rather than
+<code>+ 1</code> / <code>- 1</code>), suspect <code>O(log n)</code>.
+</p>
+
+<h2>4. See why it's so cheap</h2>
+
+<figure>
+<svg viewBox="0 0 480 210" role="img" aria-label="Bars halving from 16 down to 1 in four steps" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bar { fill: #dbe6dd; stroke: #3a7d44; }
+    .t { font: 11px -apple-system, sans-serif; fill: #555; }
+    .n { font: 12px "SF Mono", Menlo, monospace; fill: #1a1a1a; }
+  </style>
+  <rect class="bar" x="60"  y="20"  width="360" height="26"/>
+  <text class="n" x="428" y="38">16</text>
+  <rect class="bar" x="60"  y="58"  width="180" height="26"/>
+  <text class="n" x="248" y="76">8</text>
+  <rect class="bar" x="60"  y="96"  width="90"  height="26"/>
+  <text class="n" x="158" y="114">4</text>
+  <rect class="bar" x="60"  y="134" width="45"  height="26"/>
+  <text class="n" x="113" y="152">2</text>
+  <rect class="bar" x="60"  y="172" width="22"  height="26"/>
+  <text class="n" x="90"  y="190">1</text>
+  <text class="t" x="60" y="14">start</text>
+  <text class="t" x="250" y="205">4 halvings to go from 16 to 1   &#8594;   log&#8322;(16) = 4</text>
+</svg>
+<figcaption>
+Each step halves what remains. Doubling <code>n</code> adds just <strong>one</strong> more
+step. Pattern after <a href="https://www.bigocheatsheet.com/">bigocheatsheet.com</a>.
+</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>n</th><th>steps at O(n)</th><th>steps at O(log&#8322; n)</th></tr></thead>
+<tbody>
+<tr><td>16</td><td>16</td><td>4</td></tr>
+<tr><td>1,024</td><td>1,024</td><td>10</td></tr>
+<tr><td>1,000,000</td><td>1,000,000</td><td>~20</td></tr>
+<tr><td>1,000,000,000</td><td>a billion</td><td>~30</td></tr>
+</tbody>
+</table>
+
+<h2>5. The canonical example: binary search</h2>
+
+<pre><code>function binarySearch(sortedArr, target) {
+  let lo = 0, hi = sortedArr.length - 1;
+  while (lo &lt;= hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (sortedArr[mid] === target) return mid;
+    if (sortedArr[mid] &lt; target) lo = mid + 1;   // throw away the left half
+    else hi = mid - 1;                            // throw away the right half
+  }
+  return -1;
+}</code></pre>
+
+<p>
+Every comparison discards half the remaining array. From <code>n</code> down to 1 in
+<code>log&#8322; n</code> comparisons &rarr; <strong><code>O(log n)</code></strong>. This is
+the payoff for keeping an array sorted: lookups go from <code>O(n)</code>
+(<a href="0002-loops-to-big-o-linear-and-nested.html">Lesson 2's <code>searchElement</code></a>)
+to <code>O(log n)</code>.
+</p>
+
+<h2>6. Combined: a loop of n around a log step &rarr; O(n log n)</h2>
+
+<pre><code>for (let i = 0; i &lt; n; i++) {      // n times
+  binarySearch(sortedArr, arr[i]); // log n each
+}</code></pre>
+<p>
+<code>n</code> iterations, each doing <code>O(log n)</code> work &rarr;
+<strong><code>O(n log n)</code></strong>. This is the complexity of efficient sorting
+(merge sort, heap sort, <code>Array.prototype.sort</code>) — worth memorising as "the
+good sorting number".
+</p>
+
+<h2>7. Check yourself</h2>
+
+<div class="quiz" data-answer="1"
+  data-explain="Each pass removes a factor of 10 from n. The number of passes is about log base 10 of n, which in Big-O is O(log n).">
+  <p class="q">A <code>while</code> loop does <code>n = Math.floor(n / 10)</code> each pass until <code>n</code> is 0. Big-O?</p>
+  <ul>
+    <li><button class="opt">This loop is O of n</button></li>
+    <li><button class="opt">This loop is O of log n</button></li>
+    <li><button class="opt">This loop is O of one</button></li>
+    <li><button class="opt">This loop is O of n squared</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="2"
+  data-explain="Changing the log base only multiplies by a constant factor, and constants are dropped. Both are written O(log n) with no base.">
+  <p class="q">One loop divides by 2 each step, another divides by 10. How do their complexities compare?</p>
+  <ul>
+    <li><button class="opt">The divide-by-ten loop is faster asymptotically</button></li>
+    <li><button class="opt">The divide-by-two loop is faster asymptotically</button></li>
+    <li><button class="opt">They are the same, both written O(log n)</button></li>
+    <li><button class="opt">They differ, one is O(log n) one O(n)</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="3"
+  data-explain="The outer loop runs n times; each iteration does O(log n) work via binary search. Multiply: O(n log n).">
+  <p class="q">A loop runs <code>n</code> times, and each pass does one binary search on a sorted array of size <code>n</code>. Big-O?</p>
+  <ul>
+    <li><button class="opt">The total cost is O of n</button></li>
+    <li><button class="opt">The total cost is O of log n</button></li>
+    <li><button class="opt">The total cost is O of n squared</button></li>
+    <li><button class="opt">The total cost is O of n log n</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="0"
+  data-explain="i goes 1, 2, 4, 8, ... doubling until it passes n. That takes log base 2 of n steps, so O(log n).">
+  <p class="q"><code>for (let i = 1; i &lt; n; i *= 2)</code> with a constant-time body. Big-O?</p>
+  <ul>
+    <li><button class="opt">The loop runs in O(log n)</button></li>
+    <li><button class="opt">The loop runs in O(n − 1)</button></li>
+    <li><button class="opt">The loop runs in O(n / 2)</button></li>
+    <li><button class="opt">The loop runs in O(2 ^ n)</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<hr>
+
+<h2>Primary source</h2>
+<p>
+Watch: <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/"><strong>MIT 6.006, Lecture 3 — "Sorting: Insertion Sort, Merge Sort"</strong></a>
+covers where <code>log n</code> and <code>n log n</code> come from, rigorously but
+accessibly. Or read the <a href="../reference/big-o-cheat-sheet.html">cheat sheet</a>'s
+"O(log n)" row and the sorting table.
+</p>
+
+<div class="footer-note">
+<p><strong>Stuck?</strong> Ask your teacher. Try: "why is <code>log</code> of a product a
+sum, and does that matter here?", "show me a loop that looks logarithmic but isn't",
+"quiz me: linear, nested, and log loops mixed together".</p>
+<p><a href="../reference/glossary.html">Glossary</a> ·
+<a href="../reference/big-o-cheat-sheet.html">Cheat Sheet</a> ·
+<a href="../index.html">Workspace index</a></p>
+</div>
+
+<nav class="nav">
+  <span><a href="0002-loops-to-big-o-linear-and-nested.html">&#8592; Lesson 2</a></span>
+  <span><a href="../index.html">Index</a></span>
+  <span>Lesson 4: ranking the common classes &#8594; (next session)</span>
+</nav>
+
+</body>
+</html>

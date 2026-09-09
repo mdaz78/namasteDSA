@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 5 · Space Complexity &amp; the Call Stack</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<script src="../assets/quiz.js"></script>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Lesson 5</p>
+<h1>Space Complexity &amp; the Call Stack</h1>
+<p class="subtitle">The win: you can state a solution's space complexity as a separate sentence — and you won't forget the recursion call stack, which is where interviewers catch people.</p>
+
+<hr>
+
+<div class="callout">
+Everything so far was <em>time</em>. Space complexity uses the exact same rules —
+count as a function of <code>n</code>, drop constants and lower-order terms — but counts
+<strong>extra memory the algorithm allocates</strong>, not operations.
+</div>
+
+<h2>1. What counts, and what doesn't</h2>
+
+<ul>
+<li><strong>Not the input.</strong> An array of <code>n</code> numbers passed <em>in</em> is
+the caller's memory. Space complexity is the <em>auxiliary</em> (extra) memory your
+algorithm adds on top.</li>
+<li><strong>A fixed set of variables</strong> &rarr; <code>O(1)</code>, called
+<strong>"in place"</strong>. Ten counters is still <code>O(1)</code> — a constant.</li>
+<li><strong>A new structure that grows with n</strong> (array, <code>Map</code>,
+<code>Set</code>, string being built) &rarr; <code>O(n)</code>.</li>
+<li><strong>The recursion call stack</strong> &rarr; <code>O(depth)</code>. This one is
+invisible in the code. Section 3.</li>
+<li><strong>The output</strong> is a judgement call — say your assumption out loud.
+Section 4.</li>
+</ul>
+
+<h2>2. Worked examples</h2>
+
+<h3>O(1) space — your <code>searchElement.js</code></h3>
+<pre><code>function searchElement(arr, element) {
+  for (let i = 0; i &lt; arr.length; i++) {   // i is one number
+    if (arr[i] === element) return i;
+  }
+  return -1;
+}</code></pre>
+<p>
+One loop variable, no new structure. <code>O(n)</code> <em>time</em>,
+<strong><code>O(1)</code> space</strong>. Say both.
+</p>
+
+<h3>O(n) space — a frequency count</h3>
+<pre><code>function countEach(arr) {
+  const counts = new Map();          // grows with the number of distinct items
+  for (const x of arr) {
+    counts.set(x, (counts.get(x) ?? 0) + 1);
+  }
+  return counts;
+}</code></pre>
+<p>
+In the worst case every element is distinct, so <code>counts</code> holds <code>n</code>
+entries. <strong><code>O(n)</code> space</strong> — you spent memory to get a fast
+<code>O(n)</code> time. That trade is the heart of
+<a href="../index.html">Lesson 6</a>.
+</p>
+
+<h2>3. The recursion call stack</h2>
+
+<p>
+Every function call that hasn't returned yet occupies a <strong>frame</strong> on the
+call stack: its parameters, local variables, and where to resume. Frames pile up as
+calls go deeper and pop off as they return. <strong>The deepest the stack ever gets is
+your space cost</strong>, even if each frame is tiny.
+</p>
+
+<pre><code>function sumToN(n) {
+  if (n === 0) return 0;
+  return n + sumToN(n - 1);   // waits for the inner call before adding
+}
+sumToN(5);</code></pre>
+
+<figure>
+<svg viewBox="0 0 500 220" role="img" aria-label="Call stack for sumToN(5) growing to 6 frames deep then unwinding" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .fr { fill: #e7eef7; stroke: #1f6feb; }
+    .t  { font: 11px "SF Mono", Menlo, monospace; fill: #1a1a1a; }
+    .lb { font: 11px -apple-system, sans-serif; fill: #555; }
+  </style>
+  <g transform="translate(40,10)">
+    <rect class="fr" x="0" y="150" width="130" height="24"/><text class="t" x="12" y="167">sumToN(5)</text>
+    <rect class="fr" x="0" y="124" width="130" height="24"/><text class="t" x="12" y="141">sumToN(4)</text>
+    <rect class="fr" x="0" y="98"  width="130" height="24"/><text class="t" x="12" y="115">sumToN(3)</text>
+    <rect class="fr" x="0" y="72"  width="130" height="24"/><text class="t" x="12" y="89">sumToN(2)</text>
+    <rect class="fr" x="0" y="46"  width="130" height="24"/><text class="t" x="12" y="63">sumToN(1)</text>
+    <rect class="fr" x="0" y="20"  width="130" height="24"/><text class="t" x="12" y="37">sumToN(0)</text>
+    <text class="lb" x="150" y="37">&#8592; deepest point: n + 1 frames</text>
+    <text class="lb" x="150" y="130">stack grows down as calls</text>
+    <text class="lb" x="150" y="146">go deeper, unwinds on return</text>
+  </g>
+</svg>
+<figcaption>
+<code>sumToN(n)</code> reaches depth <code>n + 1</code> before anything returns &rarr;
+<strong><code>O(n)</code> space</strong>, on top of its <code>O(n)</code> time.
+</figcaption>
+</figure>
+
+<div class="rule-box">
+<h3>The classic interview gotcha</h3>
+<p>
+Naive recursive Fibonacci is <code>O(2ⁿ)</code> <em>time</em> — but its call stack only
+ever goes <code>n</code> deep (it fully computes one branch before starting the other).
+So its <em>space</em> is <strong><code>O(n)</code></strong>, not <code>O(2ⁿ)</code>.
+Time and space are answered separately and are often different.
+</p>
+</div>
+
+<h3>Loop vs. recursion</h3>
+<p>
+Your <code>countDigits.js</code> uses a <code>while</code> loop, so it holds a couple of
+variables &rarr; <code>O(1)</code> space. Rewrite it as a recursion that calls itself
+once per digit and it becomes <code>O(log n)</code> space (stack depth = number of
+digits). Same time, different space. <strong>A loop is usually the cheaper choice for
+space.</strong>
+</p>
+
+<h2>4. Does the output count?</h2>
+<p>
+If a function must build and return an array of <code>n</code> results, that array is
+<code>O(n)</code>. Interviewers differ on whether "space complexity" includes the
+required output. The safe move: <strong>state it explicitly</strong> — "O(1) extra space,
+not counting the output array" or "O(n) space including the result". Either is fine; not
+saying which is the mistake.
+</p>
+
+<h2>5. Check yourself</h2>
+
+<div class="quiz" data-answer="1"
+  data-explain="A handful of scalar variables and no growing structure is O(1) space, regardless of how long the loop runs.">
+  <p class="q">A function loops over <code>n</code> items keeping only a running <code>max</code> and <code>sum</code>. Space complexity?</p>
+  <ul>
+    <li><button class="opt">The space cost is O(n)</button></li>
+    <li><button class="opt">The space cost is O(1)</button></li>
+    <li><button class="opt">The space cost is O(log n)</button></li>
+    <li><button class="opt">The space cost is O(n²)</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="2"
+  data-explain="The Set can hold up to n distinct elements in the worst case, so it is O(n) auxiliary space.">
+  <p class="q">A function adds every element of an <code>n</code>-element array into a <code>new Set()</code>. Space complexity?</p>
+  <ul>
+    <li><button class="opt">The space cost is O(1)</button></li>
+    <li><button class="opt">The space cost is O(log n)</button></li>
+    <li><button class="opt">The space cost is O(n)</button></li>
+    <li><button class="opt">The space cost is O(n²)</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="0"
+  data-explain="Recursion depth is n (one frame per element), so O(n) stack space, even though each frame only holds an index.">
+  <p class="q"><code>function rev(arr, i = 0) { if (i &gt;= arr.length) return; rev(arr, i + 1); print(arr[i]); }</code> — space?</p>
+  <ul>
+    <li><button class="opt">It uses O(n) stack space</button></li>
+    <li><button class="opt">It uses O(1) stack space</button></li>
+    <li><button class="opt">It uses O(log n) stack space</button></li>
+    <li><button class="opt">It uses O(n²) stack space</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="3"
+  data-explain="Time counts the ~2^n calls made; space counts the deepest the stack gets, which is one full branch of depth n. They are O(2^n) time and O(n) space.">
+  <p class="q">Naive recursive Fibonacci: how do its time and space complexities relate?</p>
+  <ul>
+    <li><button class="opt">Both are O(n) here exactly</button></li>
+    <li><button class="opt">Both are O(2ⁿ) here exactly</button></li>
+    <li><button class="opt">Time O(n), space O(2ⁿ) instead</button></li>
+    <li><button class="opt">Time O(2ⁿ), space O(n) instead</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<hr>
+
+<h2>Primary source</h2>
+<p>
+Read: <a href="https://www.interviewcake.com/article/java/big-o-notation-time-and-space-complexity"><strong>Interview Cake — "Big O Notation"</strong></a>,
+the "Space complexity: the final frontier" section. It has the same "don't count the
+input, do count the call stack" framing. Then the
+<a href="../reference/big-o-cheat-sheet.html">cheat sheet</a>'s "Space complexity — don't forget" box.
+</p>
+
+<div class="footer-note">
+<p><strong>Stuck?</strong> Ask your teacher. Try: "give me a function and ask for BOTH
+time and space", "when is O(n) space actually worth it?", "show me a recursion that's
+O(log n) space, not O(n)".</p>
+<p><a href="../reference/glossary.html">Glossary</a> ·
+<a href="../reference/big-o-cheat-sheet.html">Cheat Sheet</a> ·
+<a href="../index.html">Workspace index</a></p>
+</div>
+
+<nav class="nav">
+  <span><a href="0004-ranking-the-common-classes.html">&#8592; Lesson 4</a></span>
+  <span><a href="../index.html">Index</a></span>
+  <span>Lesson 6: "can you do better?" &#8594; (next session)</span>
+</nav>
+
+</body>
+</html>

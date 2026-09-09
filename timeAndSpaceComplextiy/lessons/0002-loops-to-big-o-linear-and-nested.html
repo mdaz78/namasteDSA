@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 2 · From Loops to Big-O: Linear &amp; Nested</title>
+<link rel="stylesheet" href="../assets/lesson.css">
+<script src="../assets/quiz.js"></script>
+</head>
+<body>
+
+<p class="kicker">Time &amp; Space Complexity · Lesson 2</p>
+<h1>From Loops to Big-O: Linear &amp; Nested</h1>
+<p class="subtitle">The win: given any arrangement of <code>for</code> loops, you can write down the step-count and reduce it to Big-O — using your own repo code.</p>
+
+<hr>
+
+<div class="callout">
+<strong>Recall from <a href="0001-what-big-o-measures.html">Lesson 1</a>:</strong> find the
+operation that runs most often, write how many times it runs in terms of <code>n</code>,
+then <em>drop constants</em> and <em>drop lower-order terms</em>. This lesson is step 2 —
+getting the count out of the code.
+</div>
+
+<h2>1. Single loop &rarr; O(n)</h2>
+
+<p>Your <code>warmUp/searchElement.js</code>:</p>
+<pre><code>function searchElement(arr, element) {
+  for (let i = 0; i &lt; arr.length; i++) {
+    if (arr[i] === element) {   // runs at most n times
+      return i;
+    }
+  }
+  return -1;
+}</code></pre>
+
+<p>
+The loop visits each of the <code>n</code> elements once. The comparison inside runs at
+most <code>n</code> times &rarr; <strong><code>O(n)</code></strong>.
+</p>
+
+<div class="rule-box">
+<h3>Best case vs. worst case</h3>
+<p>
+If <code>element</code> is at index 0, the function returns after <em>one</em>
+comparison — that is the <em>best case</em>, <code>O(1)</code>. If it is last or missing,
+you do all <code>n</code> comparisons — the <em>worst case</em>, <code>O(n)</code>.
+</p>
+<p style="margin-bottom:0">
+In interviews, <strong>"what's the complexity?" means the worst case</strong> unless you
+say otherwise (<a href="../reference/glossary.html">glossary: worst case</a>). So:
+<code>searchElement</code> is <code>O(n)</code>.
+</p>
+</div>
+
+<h2>2. Two loops in a row &rarr; still O(n)</h2>
+
+<pre><code>function report(arr) {
+  for (let i = 0; i &lt; arr.length; i++) { console.log(arr[i]); }   // n
+  for (let i = 0; i &lt; arr.length; i++) { console.log(arr[i]*2); } // n
+}</code></pre>
+
+<p>
+Sequential loops <strong>add</strong>: <code>n + n = 2n</code>. Drop the constant &rarr;
+<strong><code>O(n)</code></strong>. Two passes, ten passes, a hundred passes — as long as
+the count is a fixed multiple of <code>n</code>, it stays linear.
+</p>
+
+<div class="callout">
+<strong>The pattern:</strong> loops <em>side by side</em> add. Loops <em>nested inside
+each other</em> multiply. That one distinction drives most of this lesson.
+</div>
+
+<h2>3. Nested loop &rarr; O(n²)</h2>
+
+<p>Your <code>starPatterns.js</code>, <code>pattern1</code>:</p>
+<pre><code>const pattern1 = (n) =&gt; {
+  for (let i = 0; i &lt; n; i++) {
+    let row = "";
+    for (let j = 0; j &lt; n; j++) {
+      row += "* ";        // runs n * n times
+    }
+    console.log(row);
+  }
+};</code></pre>
+
+<p>
+For <strong>each</strong> of the <code>n</code> outer passes, the inner loop runs the
+<strong>full</strong> <code>n</code> times. Multiply: <code>n &times; n = n²</code> &rarr;
+<strong><code>O(n²)</code></strong>.
+</p>
+
+<figure>
+<svg viewBox="0 0 420 180" role="img" aria-label="A 6 by 6 grid, every cell filled, showing n times n iterations" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .cell { fill: #f2e3e3; stroke: #c98f8f; }
+    .t { font: 11px -apple-system, sans-serif; fill: #555; }
+  </style>
+  <g transform="translate(60,20)">
+    <!-- 6x6 grid, all filled -->
+    <g>
+      <!-- generate via explicit rects -->
+      <rect class="cell" x="0"   y="0"   width="22" height="22"/><rect class="cell" x="24"  y="0"   width="22" height="22"/><rect class="cell" x="48"  y="0"   width="22" height="22"/><rect class="cell" x="72"  y="0"   width="22" height="22"/><rect class="cell" x="96"  y="0"   width="22" height="22"/><rect class="cell" x="120" y="0"   width="22" height="22"/>
+      <rect class="cell" x="0"   y="24"  width="22" height="22"/><rect class="cell" x="24"  y="24"  width="22" height="22"/><rect class="cell" x="48"  y="24"  width="22" height="22"/><rect class="cell" x="72"  y="24"  width="22" height="22"/><rect class="cell" x="96"  y="24"  width="22" height="22"/><rect class="cell" x="120" y="24"  width="22" height="22"/>
+      <rect class="cell" x="0"   y="48"  width="22" height="22"/><rect class="cell" x="24"  y="48"  width="22" height="22"/><rect class="cell" x="48"  y="48"  width="22" height="22"/><rect class="cell" x="72"  y="48"  width="22" height="22"/><rect class="cell" x="96"  y="48"  width="22" height="22"/><rect class="cell" x="120" y="48"  width="22" height="22"/>
+      <rect class="cell" x="0"   y="72"  width="22" height="22"/><rect class="cell" x="24"  y="72"  width="22" height="22"/><rect class="cell" x="48"  y="72"  width="22" height="22"/><rect class="cell" x="72"  y="72"  width="22" height="22"/><rect class="cell" x="96"  y="72"  width="22" height="22"/><rect class="cell" x="120" y="72"  width="22" height="22"/>
+      <rect class="cell" x="0"   y="96"  width="22" height="22"/><rect class="cell" x="24"  y="96"  width="22" height="22"/><rect class="cell" x="48"  y="96"  width="22" height="22"/><rect class="cell" x="72"  y="96"  width="22" height="22"/><rect class="cell" x="96"  y="96"  width="22" height="22"/><rect class="cell" x="120" y="96"  width="22" height="22"/>
+      <rect class="cell" x="0"   y="120" width="22" height="22"/><rect class="cell" x="24"  y="120" width="22" height="22"/><rect class="cell" x="48"  y="120" width="22" height="22"/><rect class="cell" x="72"  y="120" width="22" height="22"/><rect class="cell" x="96"  y="120" width="22" height="22"/><rect class="cell" x="120" y="120" width="22" height="22"/>
+    </g>
+    <text class="t" x="-45" y="75">outer i</text>
+    <text class="t" x="40" y="165">inner j</text>
+  </g>
+  <text class="t" x="250" y="90">every cell = one</text>
+  <text class="t" x="250" y="106">inner-loop step</text>
+  <text class="t" x="250" y="130">6 &#215; 6 = 36 = n&#178;</text>
+</svg>
+<figcaption>A full nested loop fills the whole <code>n &times; n</code> grid.</figcaption>
+</figure>
+
+<h2>4. The trap: a triangular nested loop &rarr; <em>still</em> O(n²)</h2>
+
+<p>Your <code>pattern2</code> — note the inner condition <code>j &lt;= i</code>:</p>
+<pre><code>const pattern2 = (n) =&gt; {
+  for (let i = 0; i &lt; n; i++) {
+    let row = "";
+    for (let j = 0; j &lt;= i; j++) {   // runs i+1 times, NOT n times
+      row += "* ";
+    }
+    console.log(row);
+  }
+};</code></pre>
+
+<p>
+Here the inner loop runs <code>1, 2, 3, … , n</code> times as <code>i</code> grows. Total
+steps:
+</p>
+<p style="text-align:center">
+<code>1 + 2 + 3 + … + n = n(n + 1) / 2 = n²/2 + n/2</code>
+</p>
+<p>
+Now apply the rules: drop the lower-order <code>n/2</code>, drop the constant
+<code>1/2</code> &rarr; <strong><code>O(n²)</code></strong>.
+</p>
+
+<figure>
+<svg viewBox="0 0 420 180" role="img" aria-label="A 6 by 6 grid with only the lower-left triangle filled, about half the cells" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .fill { fill: #f2e3e3; stroke: #c98f8f; }
+    .empty { fill: #fff; stroke: #e5e0d4; }
+    .t { font: 11px -apple-system, sans-serif; fill: #555; }
+  </style>
+  <g transform="translate(60,20)">
+    <rect class="fill"  x="0"   y="0"   width="22" height="22"/><rect class="empty" x="24"  y="0"   width="22" height="22"/><rect class="empty" x="48"  y="0"   width="22" height="22"/><rect class="empty" x="72"  y="0"   width="22" height="22"/><rect class="empty" x="96"  y="0"   width="22" height="22"/><rect class="empty" x="120" y="0"   width="22" height="22"/>
+    <rect class="fill"  x="0"   y="24"  width="22" height="22"/><rect class="fill"  x="24"  y="24"  width="22" height="22"/><rect class="empty" x="48"  y="24"  width="22" height="22"/><rect class="empty" x="72"  y="24"  width="22" height="22"/><rect class="empty" x="96"  y="24"  width="22" height="22"/><rect class="empty" x="120" y="24"  width="22" height="22"/>
+    <rect class="fill"  x="0"   y="48"  width="22" height="22"/><rect class="fill"  x="24"  y="48"  width="22" height="22"/><rect class="fill"  x="48"  y="48"  width="22" height="22"/><rect class="empty" x="72"  y="48"  width="22" height="22"/><rect class="empty" x="96"  y="48"  width="22" height="22"/><rect class="empty" x="120" y="48"  width="22" height="22"/>
+    <rect class="fill"  x="0"   y="72"  width="22" height="22"/><rect class="fill"  x="24"  y="72"  width="22" height="22"/><rect class="fill"  x="48"  y="72"  width="22" height="22"/><rect class="fill"  x="72"  y="72"  width="22" height="22"/><rect class="empty" x="96"  y="72"  width="22" height="22"/><rect class="empty" x="120" y="72"  width="22" height="22"/>
+    <rect class="fill"  x="0"   y="96"  width="22" height="22"/><rect class="fill"  x="24"  y="96"  width="22" height="22"/><rect class="fill"  x="48"  y="96"  width="22" height="22"/><rect class="fill"  x="72"  y="96"  width="22" height="22"/><rect class="fill"  x="96"  y="96"  width="22" height="22"/><rect class="empty" x="120" y="96"  width="22" height="22"/>
+    <rect class="fill"  x="0"   y="120" width="22" height="22"/><rect class="fill"  x="24"  y="120" width="22" height="22"/><rect class="fill"  x="48"  y="120" width="22" height="22"/><rect class="fill"  x="72"  y="120" width="22" height="22"/><rect class="fill"  x="96"  y="120" width="22" height="22"/><rect class="fill"  x="120" y="120" width="22" height="22"/>
+  </g>
+  <text class="t" x="250" y="90">half the grid filled</text>
+  <text class="t" x="250" y="106">= n&#178;/2 steps</text>
+  <text class="t" x="250" y="130">drop the &#189; &#8594; O(n&#178;)</text>
+</svg>
+<figcaption>
+Half of a grid that grows like <code>n²</code> still grows like <code>n²</code>. "Half"
+is a constant, and constants are dropped.
+</figcaption>
+</figure>
+
+<h2>5. Two different sizes &rarr; O(n · m)</h2>
+
+<pre><code>function pairUp(users, posts) {
+  for (let u = 0; u &lt; users.length; u++) {    // n
+    for (let p = 0; p &lt; posts.length; p++) {  // m
+      link(users[u], posts[p]);
+    }
+  }
+}</code></pre>
+<p>
+When the two loops range over <em>different</em> inputs, don't collapse them into one
+letter. This is <strong><code>O(n · m)</code></strong>. Only write <code>O(n²)</code>
+when both loops genuinely run the same <code>n</code> times.
+</p>
+
+<h2>6. Check yourself</h2>
+
+<div class="quiz" data-answer="2"
+  data-explain="Sequential loops add: n + n + n = 3n. Drop the constant 3, leaving O(n).">
+  <p class="q">A function has three separate (not nested) <code>for</code> loops, each running <code>n</code> times. Big-O?</p>
+  <ul>
+    <li><button class="opt">This is O of one</button></li>
+    <li><button class="opt">This is O of three</button></li>
+    <li><button class="opt">This is O of n</button></li>
+    <li><button class="opt">This is O of n cubed</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="1"
+  data-explain="Inner loop runs 1+2+...+n = n(n+1)/2 = n^2/2 + n/2 steps. Drop the lower-order term and the 1/2 constant, leaving O(n^2).">
+  <p class="q">Inner loop condition is <code>j &lt;= i</code> inside an outer loop over <code>n</code>. Big-O?</p>
+  <ul>
+    <li><button class="opt">It reduces to O of n</button></li>
+    <li><button class="opt">It reduces to O of n squared</button></li>
+    <li><button class="opt">It reduces to O of log n</button></li>
+    <li><button class="opt">It reduces to O of n factorial</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="3"
+  data-explain="The loops range over two different inputs of sizes n and m, so the count is n*m. It is only O(n^2) when both loops run the same n times.">
+  <p class="q">Nested loops: outer over an array of size <code>n</code>, inner over a different array of size <code>m</code>. Big-O?</p>
+  <ul>
+    <li><button class="opt">The complexity here is O(n)</button></li>
+    <li><button class="opt">The complexity here is O(m)</button></li>
+    <li><button class="opt">The complexity here is O(n²)</button></li>
+    <li><button class="opt">The complexity here is O(n·m)</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<div class="quiz" data-answer="0"
+  data-explain="Best case is finding it at index 0 (one comparison, O(1)); worst case is last or missing (n comparisons, O(n)). Interview default is worst case.">
+  <p class="q">For <code>searchElement</code>, what do we report as "the" time complexity in an interview?</p>
+  <ul>
+    <li><button class="opt">We report O(n), the worst case</button></li>
+    <li><button class="opt">We report O(1), the best case</button></li>
+    <li><button class="opt">We report O(n), the average case</button></li>
+    <li><button class="opt">We report O(2), the fixed case</button></li>
+  </ul>
+  <p class="feedback" aria-live="polite"></p>
+</div>
+
+<hr>
+
+<h2>Primary source</h2>
+<p>
+Read next: <a href="https://www.freecodecamp.org/news/big-o-cheat-sheet-time-complexity-chart/"><strong>freeCodeCamp — "Big O Cheat Sheet: Time Complexity Chart"</strong></a>,
+the "O(n²) — Quadratic Time" and "O(n) — Linear Time" sections. Then skim the
+<a href="../reference/big-o-cheat-sheet.html">workspace cheat sheet</a>, "Reading code &rarr; Big-O" table.
+</p>
+
+<div class="footer-note">
+<p><strong>Stuck?</strong> Ask your teacher. Good questions right now: "walk me through
+<code>pattern5</code> and <code>pattern6</code> in my <code>starPatterns.js</code>",
+"why does 'half of n²' still count as n²?", "quiz me on five random loop nests".</p>
+<p><a href="../reference/glossary.html">Glossary</a> ·
+<a href="../reference/big-o-cheat-sheet.html">Cheat Sheet</a> ·
+<a href="../index.html">Workspace index</a></p>
+</div>
+
+<nav class="nav">
+  <span><a href="0001-what-big-o-measures.html">&#8592; Lesson 1</a></span>
+  <span><a href="../index.html">Index</a></span>
+  <span>Lesson 3: logarithmic loops &#8594; (next session)</span>
+</nav>
+
+</body>
+</html>
